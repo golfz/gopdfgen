@@ -1,6 +1,6 @@
 package main
 
-import pdfgen "github.com/mastertech-hq/masterTime-PaySlip-PDFGen-Go"
+import pdfgen "github.com/golfz/gopdfgen"
 
 func main() {
 	pdfgen.Generate()

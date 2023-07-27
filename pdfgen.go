@@ -1,4 +1,4 @@
-package pdfgen
+package gopdfgen
 
 import (
 	"embed"
