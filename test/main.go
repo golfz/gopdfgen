@@ -1,7 +1,7 @@
 package main
 
-import pdfgen "github.com/golfz/gopdfgen"
+import "github.com/golfz/gopdfgen"
 
 func main() {
-	pdfgen.Generate()
+	gopdfgen.Generate("", "1q2w3e4r")
 }
