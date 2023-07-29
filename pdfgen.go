@@ -43,7 +43,7 @@ func Generate(html string, password string) ([]byte, error) {
     </style>
 </head>
 <body>
-	<h1>Hello %s</h1>
+	<h1>Hello สวัสดี %s</h1>
 </body>
 </html>`
 
@@ -64,13 +64,13 @@ func Generate(html string, password string) ([]byte, error) {
 		return nil, err
 	}
 
-	wk := exec.Command("wk/wkhtmltopdf.exe", htmlFilepath, pdfFilepath)
+	wk := exec.Command("wkhtmltopdf", htmlFilepath, pdfFilepath)
 	out, err := wk.Output()
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
-	fmt.Println(string(out))
+	fmt.Println("wkhtmltopdf success:", string(out))
 
 	conf := model.NewDefaultConfiguration()
 
