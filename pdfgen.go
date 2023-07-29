@@ -11,11 +11,14 @@ import (
 	"os/exec"
 )
 
-func Generate(html string, password string) ([]byte, error) {
-	tempFolderName := "gopdfgen_temp"
+const (
+	TempFolderName = "gopdfgen_temp"
+)
+
+func GenerateFromHTML(html string, password string) ([]byte, error) {
 	s := uuid.New().String()
 
-	htmlFilepath := fmt.Sprintf("%s/%s.html", tempFolderName, s)
+	htmlFilepath := fmt.Sprintf("%s/%s.html", TempFolderName, s)
 	defer func() {
 		err := os.Remove(htmlFilepath)
 		if err != nil {
@@ -23,7 +26,7 @@ func Generate(html string, password string) ([]byte, error) {
 		}
 	}()
 
-	pdfFilepath := fmt.Sprintf("%s/%s.pdf", tempFolderName, s)
+	pdfFilepath := fmt.Sprintf("%s/%s.pdf", TempFolderName, s)
 	defer func() {
 		err := os.Remove(pdfFilepath)
 		if err != nil {
@@ -49,7 +52,7 @@ func Generate(html string, password string) ([]byte, error) {
 
 	h = fmt.Sprintf(h, htmlFilepath)
 
-	os.Mkdir(tempFolderName, os.ModePerm)
+	os.Mkdir(TempFolderName, os.ModePerm)
 
 	f, err := os.Create(htmlFilepath)
 	if err != nil {
