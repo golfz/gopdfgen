@@ -2,11 +2,14 @@ package gopdfgen
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
+	"html/template"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 )
@@ -15,65 +18,66 @@ const (
 	TempFolderName = "gopdfgen_temp"
 )
 
-func GenerateFromHTML(html string, password string) ([]byte, error) {
+func GenerateFromHTMLTemplate(htmlTemplate string, data interface{}, password string) ([]byte, error) {
+	t, err := template.New("template").Parse(htmlTemplate)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	var htmlStr bytes.Buffer
+	t.Execute(&htmlStr, data)
+
+	return GenerateFromHTMLString(htmlStr.String(), password)
+}
+
+func GenerateFromHTMLString(htmlStr string, password string) ([]byte, error) {
 	s := uuid.New().String()
 
 	htmlFilepath := fmt.Sprintf("%s/%s.html", TempFolderName, s)
 	defer func() {
 		err := os.Remove(htmlFilepath)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 		}
 	}()
-
-	pdfFilepath := fmt.Sprintf("%s/%s.pdf", TempFolderName, s)
-	defer func() {
-		err := os.Remove(pdfFilepath)
-		if err != nil {
-			fmt.Println(err)
-		}
-	}()
-
-	h := `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <style>
-        * {
-            margin: 0;
-        }
-    </style>
-</head>
-<body>
-	<h1>Hello สวัสดี %s</h1>
-</body>
-</html>`
-
-	h = fmt.Sprintf(h, htmlFilepath)
 
 	os.Mkdir(TempFolderName, os.ModePerm)
 
 	f, err := os.Create(htmlFilepath)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return nil, err
 	}
 	defer f.Close()
 
-	_, err = f.WriteString(h)
+	_, err = f.WriteString(htmlStr)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return nil, err
 	}
 
-	wk := exec.Command("wkhtmltopdf", htmlFilepath, pdfFilepath)
+	return GenerateFromURL(htmlFilepath, password)
+}
+
+func GenerateFromURL(url string, password string) ([]byte, error) {
+	s := uuid.New().String()
+
+	pdfFilepath := fmt.Sprintf("%s/%s.pdf", TempFolderName, s)
+	defer func() {
+		err := os.Remove(pdfFilepath)
+		if err != nil {
+			log.Println(err)
+		}
+	}()
+
+	wk := exec.Command("wkhtmltopdf", url, pdfFilepath)
 	out, err := wk.Output()
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return nil, err
 	}
-	fmt.Println("wkhtmltopdf success:", string(out))
+	log.Println("[gopdfgen] call command wkhtmltopdf success", string(out))
 
 	conf := model.NewDefaultConfiguration()
 
@@ -88,14 +92,14 @@ func GenerateFromHTML(html string, password string) ([]byte, error) {
 	// Encrypt the pdf
 	err = api.EncryptFile(pdfFilepath, pdfFilepath, conf)
 	if err != nil {
-		fmt.Printf("Error: %v\n", err)
+		log.Println("[gopdfgen]", err)
 	} else {
-		fmt.Println("PDF encryption successful!")
+		log.Println("[gopdfgen] pdf encryption successful")
 	}
 
 	pdfFile, err := os.Open(pdfFilepath)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return nil, err
 	}
 	defer pdfFile.Close()
