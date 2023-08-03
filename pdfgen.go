@@ -12,6 +12,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 const (
@@ -79,22 +80,26 @@ func GenerateFromURL(url string, password string) ([]byte, error) {
 	}
 	log.Println("[gopdfgen] call command wkhtmltopdf success", string(out))
 
-	conf := model.NewDefaultConfiguration()
+	// Encrypt the pdf, if password is not empty.
+	if password = strings.TrimSpace(password); password != "" {
+		conf := model.NewDefaultConfiguration()
 
-	// Set the passwords for encryption.
-	conf.UserPW = password
-	conf.OwnerPW = password
+		// Set the passwords for encryption.
+		conf.OwnerPW = password
+		conf.UserPW = password
 
-	// Set encryption mode. You can choose from several modes: "rc4_40", "rc4_128", "aes_128", "aes_256"
-	conf.EncryptUsingAES = true
-	conf.EncryptKeyLength = 256
+		// Set encryption mode. You can choose from several modes: "rc4_40", "rc4_128", "aes_128", "aes_256"
+		conf.EncryptUsingAES = true
+		conf.EncryptKeyLength = 256
+		conf.ValidationMode = model.ValidationNone
 
-	// Encrypt the pdf
-	err = api.EncryptFile(pdfFilepath, pdfFilepath, conf)
-	if err != nil {
-		log.Println("[gopdfgen]", err)
-	} else {
-		log.Println("[gopdfgen] pdf encryption successful")
+		// Encrypt the pdf
+		err = api.EncryptFile(pdfFilepath, pdfFilepath, conf)
+		if err != nil {
+			log.Println("[gopdfgen]", err)
+		} else {
+			log.Println("[gopdfgen] pdf encryption successful")
+		}
 	}
 
 	pdfFile, err := os.Open(pdfFilepath)
