@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	TempFolderName = "gopdfgen_temp"
+	TempFolderName = "_gopdfgen_temp"
 )
 
 func GenerateFromHTMLTemplate(htmlTemplate string, data interface{}, password string) ([]byte, error) {
