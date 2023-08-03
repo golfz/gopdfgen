@@ -42,6 +42,9 @@ without password protection:
 b, err := gopdfgen.GenerateFromHTMLTemplate(htmlTemplateAsString, data, "")
 ```
 
+## Git
+add `_gopdfgen_temp/` to your .gitignore 
+
 
 
 
