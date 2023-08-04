@@ -10,6 +10,7 @@ wkhtmltopdf is used to generate the PDF from HTML.
 
 1. Copy `fonts/` folder to your project root
 2. (Optional) If you use Elastic Beanstalk, copy `install-wkhtmltopdf.config` in the `.ebextensions/` folder to your `.ebextensions/` folder
+3. (Optional) If you use other OS, download wkhtmltopdf from [https://wkhtmltopdf.org/downloads.html](https://wkhtmltopdf.org/downloads.html) and set the `PATH` environment variable to the wkhtmltopdf executable
 
 ## Usage
 
