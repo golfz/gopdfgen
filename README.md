@@ -43,6 +43,18 @@ without password protection:
 b, err := gopdfgen.GenerateFromHTMLTemplate(htmlTemplateAsString, data, "")
 ```
 
+**Generate PDF from URL**
+
+with password protection:
+```go
+b, err := gopdfgen.GenerateFromURL("https://www.google.com", "password")
+```
+
+without password protection:
+```go
+b, err := gopdfgen.GenerateFromURL("https://www.google.com", "")
+```
+
 ## Git
 add `_gopdfgen_temp/` to your .gitignore 
 
