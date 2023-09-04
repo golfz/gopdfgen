@@ -1,14 +1,13 @@
 package gopdfgen
 
 import (
-	"bufio"
 	"bytes"
+	"context"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
 	"html/template"
-	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -72,13 +71,17 @@ func GenerateFromURL(url string, password string) ([]byte, error) {
 		}
 	}()
 
-	wk := exec.Command("wkhtmltopdf", url, pdfFilepath)
-	out, err := wk.Output()
+	outbuf := bytes.Buffer{}
+	// create pdf from url using wkhtmltopdf
+	//
+	wk := exec.CommandContext(context.Background(), "wkhtmltopdf", url, "-")
+	wk.Stdout = &outbuf
+	err := wk.Run()
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
-	log.Println("[gopdfgen] call command wkhtmltopdf success", string(out))
+	//log.Println("[gopdfgen] call command wkhtmltopdf success", string(out))
 
 	// Encrypt the pdf, if password is not empty.
 	if password = strings.TrimSpace(password); password != "" {
@@ -93,6 +96,10 @@ func GenerateFromURL(url string, password string) ([]byte, error) {
 		conf.EncryptKeyLength = 256
 		conf.ValidationMode = model.ValidationNone
 
+		r := bytes.NewReader(outbuf.Bytes())
+
+		api.Encrypt(r, &outbuf, conf)
+
 		// Encrypt the pdf
 		err = api.EncryptFile(pdfFilepath, pdfFilepath, conf)
 		if err != nil {
@@ -102,15 +109,17 @@ func GenerateFromURL(url string, password string) ([]byte, error) {
 		}
 	}
 
-	pdfFile, err := os.Open(pdfFilepath)
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
-	defer pdfFile.Close()
+	//pdfFile, err := os.Open(pdfFilepath)
+	//if err != nil {
+	//	log.Println(err)
+	//	return nil, err
+	//}
+	//defer pdfFile.Close()
+	//
+	//reader := bufio.NewReader(pdfFile)
+	//content, _ := io.ReadAll(reader)
 
-	reader := bufio.NewReader(pdfFile)
-	content, _ := io.ReadAll(reader)
+	content := outbuf.Bytes()
 
 	return content, nil
 }
