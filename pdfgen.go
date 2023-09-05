@@ -134,7 +134,7 @@ func (pdfg *PDFGenerator) SetTempDir(tempDir string) {
 // e.g. _gopdfgen_temp/290bf5f8-6dfc-4736-9c4c-eccf043b8e49-body.pdf
 func (pdfg *PDFGenerator) getFilePath(fileType fileType) string {
 	sessionUUID := pdfg.ctx.Value("sessionUUID").(string)
-	filePath := fmt.Sprintf("%s/%s-%s.pdf", pdfg.tempDir, sessionUUID, fileType)
+	filePath := fmt.Sprintf("%s/%s-%s.html", pdfg.tempDir, sessionUUID, fileType)
 	return filePath
 }
 

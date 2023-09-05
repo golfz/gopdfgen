@@ -1,10 +1,23 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 	"github.com/golfz/gopdfgen"
 	"log"
 )
+
+var websiteURL = "https://iamgolfz.com"
+
+var outputFilePath = "test-url.pdf"
+
+var headerFilePath = "html/header.html"
+var footerFilePath = "html/footer.html"
+
+var testPassword = "1q2w3e4r"
+
+//go:embed html/*
+var htmlFS embed.FS
 
 func main() {
 	testWithURL()
@@ -22,24 +35,33 @@ func testWithURL() {
 	//pdfg.SetTempDir("_new_gopdfgen_temp")
 
 	// set body url
-	pdfg.SetBodyURL("https://iamgolfz.com")
+	pdfg.SetBodyURL(websiteURL)
 
-	// set header and footer url
-	//pdfg.HeaderHTML.Set("./asdfas/asdfasdf")
-	//pdfg.FooterHTML.Set("./asdfas/asdfasdf")
+	headerHTML, err := htmlFS.ReadFile(headerFilePath)
+	if err != nil {
+		log.Println(err)
+	}
 
-	pdfg.SetPassword("1q2w3e4r")
+	footerHTML, err := htmlFS.ReadFile(footerFilePath)
+	if err != nil {
+		log.Println(err)
+	}
+
+	pdfg.SetHeaderHTML(headerHTML)
+	pdfg.SetFooterHTML(footerHTML)
+
+	pdfg.SetPassword(testPassword)
 
 	// generate pdf to internal buffer
 	err = pdfg.Generate()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// write pdf to file
-	err = pdfg.WriteFile("./test-url.pdf")
+	err = pdfg.WriteFile(outputFilePath)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// get pdf as bytes
