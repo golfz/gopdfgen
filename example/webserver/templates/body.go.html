@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Body</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+            font-weight: normal;
+            font-family: 'Tahoma', 'sans-serif';
+            border: 0;
+        }
+        table {
+            width: 100%;
+        }
+        th, td {
+            text-align: left;
+        }
+        .tr_id {
+            width: 10%;
+        }
+        .tr_name {
+            width: 30%;
+        }
+        .tr_time {
+            width: 60%;
+        }
+    </style>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th class="td_id">ID</th>
+        <th class="td_name">Name</th>
+        <th class="td_time">Time</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{range .}}
+    <tr>
+        <td class="td_id">{{.ID}}</td>
+        <td class="td_name">{{.Name}}</td>
+        <td class="td_time">{{.Time}}</td>
+    </tr>
+    {{end}}
+    </tbody>
+</table>
+</body>
+</html>
