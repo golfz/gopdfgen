@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/golfz/gopdfgen/files"
+	"github.com/golfz/gopdfgen/html"
 	"github.com/google/uuid"
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
@@ -75,6 +76,7 @@ func (pdfg *PDFGenerator) SetBodyURL(bodyURL string) {
 
 // SetBodyHTML sets the html for the body of the pdf
 func (pdfg *PDFGenerator) SetBodyHTML(bodyHTML []byte) {
+	bodyHTML = html.MakeSureHasDoctype(bodyHTML)
 	bodyFilePath := pdfg.getFilePath(FileTypeBody)
 	err := files.WriteBytesToFile(bodyFilePath, bodyHTML)
 	if err != nil {
@@ -90,6 +92,7 @@ func (pdfg *PDFGenerator) SetHeaderURL(headerURL string) {
 
 // SetHeaderHTML sets the html for the header of the pdf
 func (pdfg *PDFGenerator) SetHeaderHTML(headerHTML []byte) {
+	headerHTML = html.MakeSureHasDoctype(headerHTML)
 	headerFilePath := pdfg.getFilePath(FileTypeHeader)
 	err := files.WriteBytesToFile(headerFilePath, headerHTML)
 	if err != nil {
@@ -105,6 +108,7 @@ func (pdfg *PDFGenerator) SetFooterURL(footerURL string) {
 
 // SetFooterHTML sets the html for the footer of the pdf
 func (pdfg *PDFGenerator) SetFooterHTML(footerHTML []byte) {
+	footerHTML = html.MakeSureHasDoctype(footerHTML)
 	footerFilePath := pdfg.getFilePath(FileTypeFooter)
 	err := files.WriteBytesToFile(footerFilePath, footerHTML)
 	if err != nil {
