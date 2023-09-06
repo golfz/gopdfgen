@@ -19,40 +19,152 @@ wkhtmltopdf is used to generate the PDF from HTML.
 import "github.com/golfz/gopdfgen"
 ```
 
-**Generate PDF from HTML String**
+**Example : Generate PDF from URL**
 
-with password protection:
 ```go
-b, err := gopdfgen.GenerateFromHTMLString("<h1>render from HTML string</h1>", "password")
+import "github.com/golfz/gopdfgen"
+
+func main() {
+    pdfg, err := gopdfgen.NewPDFGenerator()
+    if err != nil {
+        log.Panic(err)
+    }
+    defer pdfg.Cleanup()
+    
+    // not necessary because there's default, 
+    // but you can set the specific path
+    pdfg.SetTempDir("_custom_gopdfgen_temp")
+    
+    // set body url
+    pdfg.SetBodyURL("https://iamgolfz.com")
+    
+    // set header and footer url
+    pdfg.SetHeaderURL("https://example.com/header.html")
+    pdfg.SetFooterURL("https://example.com/footer.html")
+    
+    // set password
+    pdfg.SetPassword("12345678")
+    
+    // generate pdf to internal buffer
+    err = pdfg.Generate()
+    if err != nil {
+        log.Panic(err)
+    }
+    
+    // write pdf to file
+    err = pdfg.WriteFile(outputFilePath)
+    if err != nil {
+        log.Println(err)
+    }
+    
+    // get pdf as bytes
+    b := pdfg.Bytes()
+    
+    fmt.Printf("Done, %d bytes", len(b))
+}
 ```
 
-without password protection:
+**Example : Generate PDF from HTML**
+
 ```go
-b, err := gopdfgen.GenerateFromHTMLString("<h1>render from HTML string</h1>", "")
+import "github.com/golfz/gopdfgen"
+
+func main() {
+    pdfg, err := gopdfgen.NewPDFGenerator()
+    if err != nil {
+        log.Panic(err)
+    }
+    defer pdfg.Cleanup()
+    
+    // not necessary because there's default, 
+    // but you can set the specific path
+    pdfg.SetTempDir("_custom_gopdfgen_temp")
+    
+    // set body url
+    pdfg.SetBodyHTML("<h1>Hello World</h1>")
+    
+    // set header and footer url
+    pdfg.SetHeaderHTML("<h1>Header</h1><hr>")
+    pdfg.SetFooterHTML("<hr><h1>Footer</h1>")
+    
+    // set password
+    pdfg.SetPassword("12345678")
+    
+    // generate pdf to internal buffer
+    err = pdfg.Generate()
+    if err != nil {
+        log.Panic(err)
+    }
+    
+    // write pdf to file
+    err = pdfg.WriteFile(outputFilePath)
+    if err != nil {
+        log.Println(err)
+    }
+    
+    // get pdf as bytes
+    b := pdfg.Bytes()
+    
+    fmt.Printf("Done, %d bytes", len(b))
+}
 ```
 
-**Generate PDF from HTML Template**
+**Example : Page number in header and footer**
 
-with password protection:
-```go
-b, err := gopdfgen.GenerateFromHTMLTemplate(htmlTemplateAsString, data, "password")
-```
+```html
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script>
+        function substitutePdfVariables() {
 
-without password protection:
-```go
-b, err := gopdfgen.GenerateFromHTMLTemplate(htmlTemplateAsString, data, "")
-```
+            function getParameterByName(name) {
+                var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+                return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+            }
 
-**Generate PDF from URL**
+            function substitute(name) {
+                var value = getParameterByName(name);
+                var elements = document.getElementsByClassName(name);
 
-with password protection:
-```go
-b, err := gopdfgen.GenerateFromURL("https://www.google.com", "password")
-```
+                for (var i = 0; elements && i < elements.length; i++) {
+                    elements[i].textContent = value;
+                }
+            }
 
-without password protection:
-```go
-b, err := gopdfgen.GenerateFromURL("https://www.google.com", "")
+            ['frompage', 'topage', 'page', 'webpage', 'section', 'subsection', 'subsubsection']
+                .forEach(function (param) {
+                    substitute(param);
+                });
+
+
+            function showPage1Header(name) {
+                if (name === 'page') {
+                    var value = getParameterByName(name);
+                    var elements = document.getElementById('special-header');
+
+                    if (value === '1') {
+                        elements.style.display = 'block';
+                    }
+                }
+            }
+
+            ['frompage', 'topage', 'page', 'webpage', 'section', 'subsection', 'subsubsection']
+                .forEach(function (param) {
+                    showPage1Header(param);
+                });
+        }
+    </script>
+</head>
+<body onload="substitutePdfVariables()">
+    <h1 style="text-align: center">Header 1</h1>
+    <p style="text-align: right">
+        Page <span class="page"></span> of <span class="topage"></span>
+    </p>
+    <hr>
+</body>
+</html>
 ```
 
 ## Git
