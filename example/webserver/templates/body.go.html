@@ -30,6 +30,8 @@
     </style>
 </head>
 <body>
+
+<h1 style="position: absolute; left: -999px;">Section 1</h1>
 <table>
     <thead>
     <tr>
@@ -48,5 +50,52 @@
     {{end}}
     </tbody>
 </table>
+
+<div style = "display:block; clear:both; page-break-after:always;"></div>
+
+<h1 style="position: absolute; left: -999px;">Section 2</h1>
+<table>
+    <thead>
+    <tr>
+        <th class="td_id">ID</th>
+        <th class="td_name">Name</th>
+        <th class="td_time">Time</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{range .}}
+    <tr>
+        <td class="td_id">{{.ID}}</td>
+        <td class="td_name">{{.Name}}</td>
+        <td class="td_time">{{.Time}}</td>
+    </tr>
+    {{end}}
+    </tbody>
+</table>
+
+<div style = "display:block; clear:both; page-break-after:always;"></div>
+
+<h1 style="position: absolute; left: -999px;">Section 3</h1>
+<table>
+    <thead>
+    <tr>
+        <th class="td_id">ID</th>
+        <th class="td_name">Name</th>
+        <th class="td_time">Time</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{range .}}
+    <tr>
+        <td class="td_id">{{.ID}}</td>
+        <td class="td_name">{{.Name}}</td>
+        <td class="td_time">{{.Time}}</td>
+    </tr>
+    {{end}}
+    </tbody>
+</table>
+
+<div style = "display:block; clear:both; page-break-after:always;"></div>
+
 </body>
 </html>

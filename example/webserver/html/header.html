@@ -5,6 +5,9 @@
     <title>header</title>
     <script>
         function substitutePdfVariables() {
+            var qry = document.getElementsByClassName('qry');
+            qry[0].textContent = window.location.search;
+
 
             function getParameterByName(name) {
                 var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
@@ -49,7 +52,51 @@
 <h1 style="text-align: center">Header 1</h1>
 <h2 style="text-align: center">Header 2</h2>
 <h3 style="text-align: center">Header 3</h3>
-<p style="text-align: right">หน้า <span class="page"></span>/<span class="topage"></span></p>
+
+<table>
+    <tr style="border-top: 1px solid #cccccc">
+        <td style="text-align: left; vertical-align: top;">qry</td>
+        <td style="text-align: left; vertical-align: top;"><span class="qry"></span></td>
+    </tr>
+    <tr>
+        <td style="text-align: left; vertical-align: top;">frompage</td>
+        <td style="text-align: left; vertical-align: top;"><span class="frompage"></span></td>
+    </tr>
+    <tr>
+        <td style="text-align: left; vertical-align: top;">topage</td>
+        <td style="text-align: left; vertical-align: top;"><span class="topage"></span></td>
+    </tr>
+    <tr>
+        <td style="text-align: left; vertical-align: top;">page</td>
+        <td style="text-align: left; vertical-align: top;"><span class="page"></span></td>
+    </tr>
+    <tr>
+        <td style="text-align: left; vertical-align: top;">webpage</td>
+        <td style="text-align: left; vertical-align: top;"><span class="webpage"></span></td>
+    </tr>
+    <tr>
+        <td style="text-align: left; vertical-align: top;">section</td>
+        <td style="text-align: left; vertical-align: top;"><span class="section"></span></td>
+    </tr>
+    <tr>
+        <td style="text-align: left; vertical-align: top;">subsection</td>
+        <td style="text-align: left; vertical-align: top;"><span class="subsection"></span></td>
+    </tr>
+    <tr>
+        <td style="text-align: left">subsubsection</td>
+        <td style="text-align: left"><span class="subsubsection"></span></td>
+    </tr>
+</table>
+
+<!--<div style="text-align: right">qry: <span class="qry"></span></div>-->
+<!--<div style="text-align: right">frompage: <span class="frompage"></span></div>-->
+<!--<div style="text-align: right">topage: <span class="topage"></span></div>-->
+<!--<div style="text-align: right">page: <span class="page"></span></div>-->
+<!--<div style="text-align: right">webpage: <span class="webpage"></span></div>-->
+<!--<div style="text-align: right">section: <span class="section"></span></div>-->
+<!--<div style="text-align: right">subsection: <span class="subsection"></span></div>-->
+<!--<div style="text-align: right">subsubsection: <span class="subsubsection"></span></div>-->
+
 <hr>
 </body>
 </html>

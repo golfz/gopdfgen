@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-const outputFilePath = "test-url.pdf"
+const outputFilePath = "example.pdf"
 
 const testPassword = "1q2w3e4r"
 
@@ -103,7 +103,7 @@ func testWithHTML() {
 	pdfg.SetFooterHTML(footerHTML)
 
 	// set password
-	pdfg.SetPassword(testPassword)
+	//pdfg.SetPassword(testPassword)
 
 	// generate pdf to internal buffer
 	err = pdfg.Generate()
@@ -134,7 +134,7 @@ type BodyData struct {
 func createBodyData() []BodyData {
 	bodyData := make([]BodyData, 0)
 
-	for i := 1; i <= 1000; i++ {
+	for i := 1; i <= 60; i++ {
 		bodyData = append(bodyData, BodyData{
 			ID:   i,
 			Name: "Name " + strconv.Itoa(i),
